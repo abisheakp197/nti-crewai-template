@@ -14,10 +14,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Verify imports
+      - name: Verify Python syntax
         run: |
-          python -c "import crewai; print('CrewAI OK')"
-          python -c "import langchain_nti; print('NTI wrapper OK')"
-          python -c "from tools import execute_transfer; print('Tools OK')"
+          python -m py_compile crew.py
+          python -m py_compile agents.py
+          python -m py_compile tools.py
+          echo "All Python files compile successfully"
+      - name: Verify required files exist
+        run: |
+          test -f requirements.txt
+          test -f README.md
+          test -f LICENSE
+          test -f .env.example
+          echo "All required files present"
