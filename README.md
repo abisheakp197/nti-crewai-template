@@ -1,5 +1,7 @@
 # NTI Secure CrewAI Template
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A working CrewAI multi-agent crew with NTI (Neutral Trust Infrastructure) post-quantum security pre-installed.
 
 Every tool call from every agent is cryptographically verified before execution using all 5 pillars of NTI:
@@ -47,7 +49,7 @@ Any tool without an explicit grant is automatically blocked.
 
 ## License
 
-PolyForm Shield License 1.0.0. Source-available.
+MIT License. See LICENSE.
 
 ## Links
 
