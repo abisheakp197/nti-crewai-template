@@ -3,6 +3,7 @@ Tools used by NTI-secured CrewAI agents.
 """
 
 from crewai.tools import tool
+
 from nti_security import get_nti_middleware, wrap_tool_with_nti
 
 # Setup NTI middleware for analyst agent

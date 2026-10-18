@@ -11,9 +11,9 @@ Run:
 
 import os
 import sys
-from dotenv import load_dotenv
 
 from crewai import Crew, Task
+from dotenv import load_dotenv
 
 from agents import build_agents
 

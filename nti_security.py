@@ -7,7 +7,8 @@ zero-trust capabilities on tool execution.
 
 import json
 import uuid
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import ube_foundation
 from crewai_nti import NTIGuardrailMiddleware
