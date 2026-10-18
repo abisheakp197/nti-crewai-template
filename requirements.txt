@@ -1,5 +1,6 @@
-crewai>=0.30.0
+crewai==1.15.28
+ube-foundation==0.1.7
+crewai-nti==0.1.0
 crewai-tools>=0.10.0
 langchain-openai>=0.2.0
-langchain-nti>=0.1.1
 python-dotenv>=1.0.0

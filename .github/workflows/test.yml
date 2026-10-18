@@ -14,16 +14,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Verify Python syntax
+      - name: Install dependencies
         run: |
-          python -m py_compile crew.py
-          python -m py_compile agents.py
-          python -m py_compile tools.py
-          echo "All Python files compile successfully"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest ruff mypy
+      - name: Run Ruff Linter
+        run: |
+          ruff check .
+      - name: Run Mypy Type Checker
+        run: |
+          mypy .
+      - name: Run Pytest Test Suite
+        run: |
+          python -m pytest
       - name: Verify required files exist
         run: |
           test -f requirements.txt
           test -f README.md
           test -f LICENSE
+          test -f SECURITY.md
           test -f .env.example
           echo "All required files present"

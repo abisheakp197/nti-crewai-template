@@ -8,3 +8,6 @@ venv/
 .DS_Store
 *.db
 *.log
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
