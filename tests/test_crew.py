@@ -3,8 +3,9 @@ Unit tests for NTI Secure CrewAI Template.
 """
 
 import os
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 from agents import build_agents
 from crew import build_crew, validate_environment
@@ -13,13 +14,17 @@ from tools import delete_account, execute_transfer, read_account
 
 def test_missing_api_key_raises_error() -> None:
     """Verify that missing or placeholder OPENAI_API_KEY raises a clean ValueError."""
-    with patch.dict(os.environ, {"OPENAI_API_KEY": ""}, clear=True):
-        with pytest.raises(ValueError, match="OPENAI_API_KEY is missing or invalid"):
-            validate_environment()
+    with (
+        patch.dict(os.environ, {"OPENAI_API_KEY": ""}, clear=True),
+        pytest.raises(ValueError, match="OPENAI_API_KEY is missing or invalid"),
+    ):
+        validate_environment()
 
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "sk-your-key-here"}):
-        with pytest.raises(ValueError, match="OPENAI_API_KEY is missing or invalid"):
-            validate_environment()
+    with (
+        patch.dict(os.environ, {"OPENAI_API_KEY": "sk-your-key-here"}),
+        pytest.raises(ValueError, match="OPENAI_API_KEY is missing or invalid"),
+    ):
+        validate_environment()
 
 
 def test_valid_api_key_passes_validation() -> None:
