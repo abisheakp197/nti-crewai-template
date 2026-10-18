@@ -66,5 +66,7 @@ def test_build_agents() -> None:
         assert "auditor" in agents
         assert agents["analyst"].role == "Financial Analyst"
         assert agents["auditor"].role == "Compliance Auditor"
-        assert len(agents["analyst"].tools) == 3
-        assert len(agents["auditor"].tools) == 1
+        analyst_tools = agents["analyst"].tools
+        auditor_tools = agents["auditor"].tools
+        assert analyst_tools is not None and len(analyst_tools) == 3
+        assert auditor_tools is not None and len(auditor_tools) == 1
