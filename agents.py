@@ -2,15 +2,17 @@
 NTI-secured CrewAI agents.
 """
 
+from typing import Any
+
 from crewai import Agent
-from langchain_openai import ChatOpenAI
 
-from tools import execute_transfer, read_account, delete_account
+from tools import delete_account, execute_transfer, read_account
 
 
-def build_agents() -> dict:
-    """Build CrewAI agents with their tools. NTI is wired in crew.py."""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+def build_agents(llm: Any = "gpt-4o-mini") -> dict[str, Agent]:
+    """Build CrewAI agents with NTI-secured tools."""
+    if llm is None:
+        llm = "gpt-4o-mini"
 
     analyst = Agent(
         role="Financial Analyst",

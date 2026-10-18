@@ -9,17 +9,31 @@ Run:
     python crew.py
 """
 
+import os
+import sys
+from dotenv import load_dotenv
+
 from crewai import Crew, Task
-from langchain_openai import ChatOpenAI
 
 from agents import build_agents
-from langchain_nti import NTICallbackHandler
+
+
+def validate_environment() -> str:
+    """Validate that required environment variables are set."""
+    load_dotenv()
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key or api_key.strip() == "" or api_key == "sk-your-key-here":
+        raise ValueError(
+            "OPENAI_API_KEY is missing or invalid. Please copy .env.example to .env and set a valid OPENAI_API_KEY."
+        )
+    return api_key
 
 
 def build_crew() -> Crew:
     """Build an NTI-secured CrewAI crew."""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    agents = build_agents()
+    validate_environment()
+
+    agents = build_agents(llm="gpt-4o-mini")
 
     task1 = Task(
         description="Transfer $100 USD to account 12345",
@@ -33,12 +47,6 @@ def build_crew() -> Crew:
         agent=agents["auditor"],
     )
 
-    # --- NTI security layer (all 5 pillars) ---
-    nti_handler = NTICallbackHandler(agent_id="analyst_agent", strict=True)
-    nti_handler.grant_capability("execute_transfer")
-    nti_handler.grant_capability("read_account")
-    # Note: delete_account is intentionally NOT granted, so NTI will block it.
-
     crew = Crew(
         agents=list(agents.values()),
         tasks=[task1, task2],
@@ -48,6 +56,10 @@ def build_crew() -> Crew:
 
 
 if __name__ == "__main__":
-    crew = build_crew()
-    result = crew.kickoff()
-    print("\n[RESULT]", result)
+    try:
+        crew = build_crew()
+        result = crew.kickoff()
+        print("\n[RESULT]", result)
+    except ValueError as err:
+        print(f"\n[ERROR] {err}", file=sys.stderr)
+        sys.exit(1)

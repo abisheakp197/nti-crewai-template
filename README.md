@@ -24,36 +24,44 @@ python crew.py
 
 ## What Just Happened
 
-- The analyst agent executed `execute_transfer` because NTI granted that capability.
+- The analyst agent executed `execute_transfer` and `read_account` because NTI granted those capabilities.
 - The auditor agent reviewed the action using `read_account`.
 - If any agent tried to call `delete_account`, NTI would raise `PermissionError` before the tool ran.
 
 ## How To Grant Capabilities
 
-In crew.py, use the NTI callback handler:
+In `tools.py` or your NTI security layer, use the `NTIGuardrailMiddleware` via `nti_security`:
 
 ```python
-nti_handler = NTICallbackHandler(agent_id="analyst_agent", strict=True)
-nti_handler.grant_capability("execute_transfer")
-nti_handler.grant_capability("read_account")
+from nti_security import get_nti_middleware, wrap_tool_with_nti
+
+nti_middleware = get_nti_middleware(
+    agent_id="analyst_agent",
+    granted_capabilities=["execute_transfer", "read_account"],
+)
+
+# Wrap tool with NTI capability enforcement
+execute_transfer = wrap_tool_with_nti(execute_transfer, nti_middleware)
 ```
 
-Any tool without an explicit grant is automatically blocked.
+Any tool call without an explicit capability grant is automatically blocked with an `NTI Security Denied Action` `PermissionError`.
 
 ## Project Structure
 
-- crew.py — Crew definition + NTI wiring
-- agents.py — Agent definitions
-- tools.py — Available tools
-- requirements.txt — Dependencies
+- `crew.py` — Crew definition + environment validation
+- `agents.py` — Agent definitions with NTI-secured tools
+- `tools.py` — Available tools wrapped with NTI security
+- `nti_security.py` — NTI middleware and capability wrapping configuration
+- `requirements.txt` — Dependencies (crewai, ube-foundation, crewai-nti)
+- `SECURITY.md` — Security policy and vulnerability disclosure guidelines
+- `LICENSE` — License terms
 
 ## License
 
-MIT License. See LICENSE.
+MIT License. See [LICENSE](LICENSE).
 
 ## Links
 
 - Core SDK: https://pypi.org/project/ube-foundation/
-- LangChain wrapper: https://pypi.org/project/langchain-nti/
 - CrewAI wrapper: https://pypi.org/project/crewai-nti/
 - Homepage: https://abisheakp197.github.io/Neutral-Trust-Infrastructure/
