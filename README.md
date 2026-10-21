@@ -65,3 +65,46 @@ MIT License. See [LICENSE](LICENSE).
 - Core SDK: https://pypi.org/project/ube-foundation/
 - CrewAI wrapper: https://pypi.org/project/crewai-nti/
 - Homepage: https://abisheakp197.github.io/Neutral-Trust-Infrastructure/
+
+## Architecture
+
+```mermaid
+graph TD
+    subgraph DevWorkspace["Developer Workspace"]
+        CrewDef["Crew Definition<br/>(crew.py)"]
+        AgentRoles["Agent Roles & Tools<br/>(agents.py & tools.py)"]
+        TaskAssign["Task Assignments<br/>(Financial Analyst & Auditor Tasks)"]
+    end
+
+    subgraph CrewFramework["CrewAI Framework"]
+        AgentA["Agent A<br/>(Financial Analyst)"]
+        AgentB["Agent B<br/>(Compliance Auditor)"]
+        TaskDelegation["Task Delegation & Tool Execution Loop"]
+    end
+
+    subgraph NTILayer["NTI Security Layer"]
+        Middleware["NTIGuardrailMiddleware<br/>(nti_security.py)"]
+        HandoffVerification["Handoff & Capability Verification"]
+        FailClosed["Fail-Closed Logic<br/>(PermissionError / Action Blocked)"]
+    end
+
+    subgraph CryptoEngine["Crypto Engine"]
+        PqcKeys["PqcKeyPair<br/>(Dilithium5 / Kyber1024)"]
+        PqcSig["Post-Quantum Signature Verification"]
+    end
+
+    CrewDef -->|Initializes| CrewFramework
+    AgentRoles -->|Configures| AgentA
+    AgentRoles -->|Configures| AgentB
+    TaskAssign -->|Schedules Tasks| TaskDelegation
+
+    AgentA -->|Initiates Task / Tool Call| TaskDelegation
+    TaskDelegation -->|Intercept Handoff / Tool Call| Middleware
+    Middleware -->|Retrieve PQC Identity| PqcKeys
+    PqcKeys -->|Provide Dilithium5 Keys| PqcSig
+    Middleware -->|Verify Capability & Signature| HandoffVerification
+    HandoffVerification -->|Uses| PqcSig
+
+    HandoffVerification -->|Authorized / Allowed| AgentB
+    HandoffVerification -->|Unauthorized / Denied| FailClosed
+```
